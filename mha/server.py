@@ -21,12 +21,14 @@ app = Flask(__name__)
 reader = geoip2.database.Reader(
     '%s/data/GeoLite2-Country.mmdb' % app.static_folder)
 
-
 def expand_ipv6(ip):
+    # Ensure the IP starts with a valid format
+    if ip.startswith(':'):
+        ip = ip[1:]
+
     try:
-        # Convert to IPv6Address to expand shorthand
-        expanded_ip = ipaddress.IPv6Address(ip).exploded
-        return expanded_ip
+        # Try expanding the IPv6 address
+        return str(ipaddress.IPv6Address(ip).exploded)
     except ValueError:
         return None
 
